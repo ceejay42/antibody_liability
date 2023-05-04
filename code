@@ -1,0 +1,34 @@
+import re
+import pandas as pd
+
+
+# Define the library of motifs
+motif_library = {
+    "Glycosylation": "N[^P][ST]",
+    "Deamidation": "GN[YTG]|N[GSTN]",
+    "Isomerization": "D[GSD]",
+    "Aggregation/low solubility": "FHW",
+    "High Viscosity": "H[YW][FH]"
+}
+
+
+# Define the amino acid sequence to search - enter your sequence of interest within the quotes below
+sequence = "QVRLQESGPGLVKPSQTLSLTCTVSGFSLTSNAVGWVRQAPGKAPEWLATIDTGGGTGDNPALRSRLSIIRDIFKSQVSLSLSSVTTEDTAVYYCVSYYSGYKWGVDGDVWGRGLLVTVSS"
+
+# Create a list to store the results
+results = []
+
+# Search for motifs in the sequence
+def liabilities(sequence, motif_library):
+    for motif_name, motif_regex in motif_library.items():
+        matches = re.findall(motif_regex, sequence)
+        if matches:
+            positions = [str(i+1) for i in range(len(sequence)) if re.match(motif_regex, sequence[i:i+3])]
+            results.append([motif_name, ' '.join(positions)])
+    if results:
+        res_df = pd.DataFrame(results, columns =['Motif', 'Positions']) 
+        print(res_df)
+    if not results:
+        print("No liabilities detected")
+    
+liabilities(sequence, motif_library)
